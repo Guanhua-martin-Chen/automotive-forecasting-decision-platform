@@ -1,0 +1,27 @@
+# Keep this repository documentation-only and safe for public review.
+.private/
+.env
+.env.*
+*.xlsx
+*.xls
+*.csv
+*.parquet
+*.jsonl
+*.pkl
+*.joblib
+*.zip
+*.pptx
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.mp4
+*.key
+*.pem
+*.log
+__pycache__/
+node_modules/
+.next/
+dist/
+build/
