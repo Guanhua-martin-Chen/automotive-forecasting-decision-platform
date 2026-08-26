@@ -4,7 +4,7 @@ End-to-end forecasting and decision-support system for monthly automotive access
 
 **Forecasting -> Hierarchical Reconciliation -> QA -> Governed Release -> Dashboard -> Excel Delivery**
 
-> A UCLA Master of Engineering capstone project developed with a global automotive parts supplier.
+> A UCLA Master of Engineering capstone project developed with Hyundai Mobis / Mobis Parts America.
 
 The production implementation, company data, business-sensitive outputs, and deployment credentials remain private. This repository is a sanitized technical case study containing no proprietary company data or production source code.
 
@@ -193,7 +193,7 @@ Verified technologies used in the private implementation:
 
 ## Confidentiality
 
-This repository is a sanitized technical case study of a UCLA MEng capstone project developed with a global automotive parts supplier. Production implementation code, company datasets, internal workbooks, business-sensitive outputs, and deployment credentials remain private. Examples shown here are architectural, generalized, or synthetic.
+This repository is a sanitized technical case study of a UCLA MEng capstone project developed with Hyundai Mobis / Mobis Parts America. Production implementation code, company datasets, internal workbooks, business-sensitive outputs, and deployment credentials remain private. Examples shown here are architectural, generalized, or synthetic.
 
 ## Supporting Documentation
 
