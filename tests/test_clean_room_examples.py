@@ -19,10 +19,21 @@ def load_example(name: str):
 
 
 class CleanRoomExampleTests(unittest.TestCase):
-    def test_reconciled_detail_equals_control_total(self):
-        reconcile = load_example("synthetic_reconciliation").reconcile
-        detail = reconcile(101, {"Brand A / Model": 5, "Brand A / PLC": 3, "Brand B / PLC": 2})
-        self.assertEqual(sum(detail.values()), 101)
+    def test_matrix_reconciliation_matches_model_plc_and_brand_controls(self):
+        reconcile_matrix = load_example("synthetic_reconciliation").reconcile_matrix
+        brand_control_total = 100.0
+        model_control_totals = [55.0, 45.0]
+        plc_control_totals = [35.0, 65.0]
+        matrix = reconcile_matrix(
+            [[4.0, 1.0], [2.0, 3.0]],
+            model_control_totals,
+            plc_control_totals,
+        )
+        for row, target in zip(matrix, model_control_totals):
+            self.assertAlmostEqual(sum(row), target, places=8)
+        for column, target in enumerate(plc_control_totals):
+            self.assertAlmostEqual(sum(row[column] for row in matrix), target, places=8)
+        self.assertAlmostEqual(sum(sum(row) for row in matrix), brand_control_total, places=8)
 
     def test_rolling_origin_training_never_uses_future_observations(self):
         rolling_origins = load_example("rolling_origin_backtest").rolling_origins

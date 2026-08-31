@@ -13,7 +13,7 @@ PIO means **Port-Installed Options**: accessories installed before vehicles are 
 ## 30-Second Overview
 
 - **Business problem:** Monthly planning needs a credible Revenue outlook, vehicle-volume context, and operational accessory detail without allowing those views to contradict one another.
-- **Historical validation:** Historical one-month-ahead validation: **approximately 7.3% WAPE**. This is a historical rolling-origin backtest result—not a guarantee of future accuracy or a claim of measured commercial impact.
+- **Historical validation:** Historical one-month-ahead validation: **approximately 7.3% Weighted Absolute Percentage Error (WAPE)**. This is a historical rolling-origin backtest result—not a guarantee of future accuracy or a claim of measured commercial impact.
 - **My role:** Within a UCLA MEng team capstone, I led the forecasting pipeline, time-aware validation, reconciliation, governance, QA, approved-run handoff, and Sponsor Excel delivery workstreams.
 - **Technical approach:** Leakage-safe rolling-origin evaluation, governed per-Brand method selection, bottom-up Quantity signals, reconciliation, explicit release controls, and a server-side application integration pattern.
 - **Decision outputs:** One Approved Run provides consistent Brand + Model, Brand + PLC, and Brand + Model + PLC planning detail to the API, Dashboard, and controlled Excel delivery.
@@ -46,9 +46,19 @@ Bottom-up detail provides distribution signals; it does not redefine the governe
 
 ## Forecasting and validation
 
-Different Brands can exhibit different demand patterns. The governed Revenue portfolio used a pooled Ridge model, a pooled Random Forest, and a working-day-adjusted seasonal method across the Brand-level forecasts. Supporting Quantity signals used XGBoost, while historical-share methods supported lower-level planning allocation and ETS remained a benchmark where appropriate.
+Different Brands can exhibit different demand patterns. The governed Revenue portfolio used a pooled Ridge model, a pooled Random Forest, and a working-day-adjusted seasonal method across the Brand-level forecasts.
+
+Quantity planning combined bottom-up model-level signals, including XGBoost where selected, with an aggregate ETS control when ETS provided the stronger governed total forecast. Lower-level quantities were reconciled to that control total, with historical-share methods supporting PLC allocation.
 
 Candidate approaches were evaluated with leakage-safe rolling-origin backtesting: each historical test period used only the information available at that forecast origin. Selection considered accuracy, stability, operational practicality, interpretability, and reproducibility. Routine source refreshes can create a new run, but they do not silently reselect the official method.
+
+| Brand | Governed Revenue Method |
+| ----- | ----------------------- |
+| HMA | Pooled Ridge Regression |
+| GMA | Pooled Random Forest |
+| KUS | Working-Day-Adjusted Seasonal |
+
+Different brands selected different methods because their historical demand patterns differed. Candidate methods were evaluated with leakage-safe rolling-origin validation, then the selected method was frozen in a governed registry rather than silently reselected on routine refreshes.
 
 For the selected Brand Revenue portfolio, the **approximately 7.3% WAPE** figure is specifically the historical **one-month-ahead (H1)** rolling-origin result. H2/H3 were governance guardrails for coverage and stability; this is not a combined multi-horizon score.
 
@@ -57,6 +67,8 @@ For the selected Brand Revenue portfolio, the **approximately 7.3% WAPE** figure
 ### Actual, Nowcast, and Forecast
 
 A partial month is useful evidence, but it is not a closed Actual. The system labels completed periods as **Actual**, the in-progress period as **Nowcast**, and future planning periods as **Forecast**.
+
+The current-month Revenue nowcast blends the frozen pre-month Brand forecast with a leakage-safe month-to-date completion-curve projection using governed day-specific weights.
 
 ### Regular business and Fleet component
 
@@ -94,7 +106,7 @@ Teammates contributed across the broader capstone. This repository does not clai
 
 The short programs in [`examples/`](examples) use fabricated data only. They are clean-room teaching examples of reconciliation, time-aware backtesting, and explicit approval—not private implementation code, an API, or a dashboard.
 
-- [`synthetic_reconciliation.py`](examples/synthetic_reconciliation.py): distribute a synthetic control total with exact reconciliation.
+- [`synthetic_reconciliation.py`](examples/synthetic_reconciliation.py): reconcile a synthetic Brand × Model × PLC matrix to its row and column controls.
 - [`rolling_origin_backtest.py`](examples/rolling_origin_backtest.py): construct evaluation splits that never train on future observations.
 - [`governed_release_demo.py`](examples/governed_release_demo.py): show that failed drafts cannot replace an Approved Run.
 
