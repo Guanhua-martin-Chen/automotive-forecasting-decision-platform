@@ -8,7 +8,9 @@ This is a high-level methodology overview. It deliberately omits company data, a
 
 The system evaluates candidate forecasting approaches by brand using leakage-safe, time-aware backtesting. This means each historical test period is evaluated using only information that would have been available at that point in time.
 
-The governed Brand Revenue portfolio used a pooled Ridge model, a pooled Random Forest, and a working-day-adjusted seasonal method across the selected Brand forecasts. Supporting Quantity signals used XGBoost; ETS remained an aggregate benchmark, and historical-share methods supported lower-level allocation. These are model-family descriptions, not published private implementation code.
+The governed Brand Revenue portfolio used a pooled Ridge model, a pooled Random Forest, and a working-day-adjusted seasonal method across the selected Brand forecasts. These are model-family descriptions, not published private implementation code.
+
+Quantity planning combined bottom-up model-level signals, including XGBoost where selected, with an aggregate ETS control when ETS provided the stronger governed total forecast. Lower-level quantities were reconciled to that control total, with historical-share methods supporting PLC allocation.
 
 **Historical one-month-ahead validation: approximately 7.3% WAPE.** This is the selected Brand Revenue portfolio's H1 rolling-origin backtest result. H2/H3 were coverage and stability guardrails, so this figure is neither a combined multi-horizon score nor a guarantee of future accuracy or commercial impact.
 
@@ -31,6 +33,8 @@ Regular PNVW is regular accessory Revenue divided by selected regular Wholesale 
 ## Current-month nowcasting
 
 For the current incomplete month, month-to-date information is used to update the near-term view. The result is labeled a Nowcast. Completed historical months remain Actual, and future periods remain Forecast.
+
+The current-month Revenue nowcast blends the frozen pre-month Brand forecast with a leakage-safe month-to-date completion-curve projection using governed day-specific weights.
 
 ## Complementary planning dimensions and reconciliation
 

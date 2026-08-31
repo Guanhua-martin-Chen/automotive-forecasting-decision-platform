@@ -1,20 +1,51 @@
-"""Clean-room reconciliation with fabricated planning weights only."""
+"""Clean-room conceptual Brand × Model × PLC matrix reconciliation.
+
+This fabricated RAS-style demonstration is not private production code.
+"""
+
+from math import isclose
 
 
-def reconcile(control_total: int, raw_weights: dict[str, int]) -> dict[str, int]:
-    """Allocate an integer synthetic control total while preserving its exact sum."""
-    if control_total < 0 or not raw_weights or any(weight < 0 for weight in raw_weights.values()):
-        raise ValueError("control_total and weights must be non-negative")
-    weight_total = sum(raw_weights.values())
-    if weight_total == 0:
-        raise ValueError("at least one weight must be positive")
-    allocation = {key: control_total * weight // weight_total for key, weight in raw_weights.items()}
-    remainder = control_total - sum(allocation.values())
-    ranked_keys = sorted(raw_weights, key=lambda key: (control_total * raw_weights[key]) % weight_total, reverse=True)
-    for key in ranked_keys[:remainder]:
-        allocation[key] += 1
-    return allocation
+def reconcile_matrix(
+    seed_matrix: list[list[float]],
+    model_totals: list[float],
+    plc_totals: list[float],
+    *,
+    tolerance: float = 1e-9,
+    max_iterations: int = 1_000,
+) -> list[list[float]]:
+    """Reconcile a positive seed matrix to synthetic Model rows and PLC columns."""
+    if not seed_matrix or len(seed_matrix) != len(model_totals):
+        raise ValueError("seed rows must match model totals")
+    if any(len(row) != len(plc_totals) for row in seed_matrix):
+        raise ValueError("seed columns must match PLC totals")
+    if any(value <= 0 for row in seed_matrix for value in row):
+        raise ValueError("this simple demonstration requires a positive seed matrix")
+    if any(value < 0 for value in model_totals + plc_totals):
+        raise ValueError("control totals must be non-negative")
+    if not isclose(sum(model_totals), sum(plc_totals), abs_tol=tolerance):
+        raise ValueError("Model and PLC control totals must share the Brand total")
+
+    matrix = [row[:] for row in seed_matrix]
+    for _ in range(max_iterations):
+        for row, target in zip(matrix, model_totals):
+            factor = target / sum(row)
+            for column in range(len(row)):
+                row[column] *= factor
+        for column, target in enumerate(plc_totals):
+            factor = target / sum(row[column] for row in matrix)
+            for row in matrix:
+                row[column] *= factor
+        row_error = max(abs(sum(row) - target) for row, target in zip(matrix, model_totals))
+        column_error = max(
+            abs(sum(row[column] for row in matrix) - target)
+            for column, target in enumerate(plc_totals)
+        )
+        if max(row_error, column_error) <= tolerance:
+            return matrix
+    raise RuntimeError("synthetic matrix did not converge within max_iterations")
 
 
 if __name__ == "__main__":
-    print(reconcile(100, {"Brand A / Model": 5, "Brand A / PLC": 3, "Brand B / PLC": 2}))
+    result = reconcile_matrix([[3.0, 2.0], [1.0, 4.0]], [50.0, 50.0], [45.0, 55.0])
+    print(result)
