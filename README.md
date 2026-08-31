@@ -1,5 +1,7 @@
 # Hyundai Mobis PIO Accessory Forecasting & Decision Platform
 
+[![Public examples](https://github.com/Guanhua-martin-Chen/automotive-forecasting-decision-platform/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/Guanhua-martin-Chen/automotive-forecasting-decision-platform/actions/workflows/tests.yml)
+
 Turn monthly PIO accessory demand signals into a governed planning view that stays coherent from Brand Revenue to Model and PLC detail.
 
 > A sanitized UCLA MEng capstone case study developed with Hyundai Mobis / Mobis Parts America. This public repository contains no company data, production source code, Sponsor workbooks, operational outputs, credentials, or claim of production deployment or measured commercial impact.
