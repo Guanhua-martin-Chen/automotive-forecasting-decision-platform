@@ -1,6 +1,8 @@
-# Architecture
+# Architecture and System Boundaries
 
 This document describes the system at a conceptual level. It does not reproduce implementation code, private schemas, endpoint names, deployment configuration, or business-sensitive outputs.
+
+**Case-study map:** [Overview](../README.md) | [Forecasting methodology](forecasting-methodology.md) | [Governance and release](governance-and-release.md)
 
 ## Design goal
 
@@ -48,3 +50,5 @@ This distinction prevents a partial period from being mistaken for a closed fina
 ## Why the separation matters
 
 The architecture makes release lineage visible: one approved release feeds both the Dashboard and business Excel output. It also limits the risk that a browser calculation, stale local file, or exploratory workflow is presented as the official planning view.
+
+**Next:** [Forecasting methodology and planning semantics](forecasting-methodology.md)

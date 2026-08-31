@@ -1,6 +1,8 @@
-# Forecasting Methodology
+# Forecasting Methodology and Planning Semantics
 
 This is a high-level methodology overview. It deliberately omits company data, selected model assignments, scores, registry contents, and private feature definitions.
+
+**Case-study map:** [Overview](../README.md) | [Architecture](architecture.md) | [Governance and release](governance-and-release.md)
 
 ## Revenue model evaluation
 
@@ -39,3 +41,5 @@ The system uses the approved brand-level Revenue forecast as the control total. 
 ## Separate business components
 
 Some program components require their own business treatment. The system keeps such a component separate from regular business metrics, adds it once to the all-in outlook, and avoids attributing it to a vehicle model without a governed basis. This is important for preventing double counting and misleading per-vehicle context.
+
+**Next:** [Governance, QA, and approved-release lifecycle](governance-and-release.md)
