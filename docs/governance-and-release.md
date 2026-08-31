@@ -1,6 +1,8 @@
-# Governance and Release
+# Governance, QA, and Approved-Release Lifecycle
 
 Forecasting is useful for planning only when users can tell which result is current, how it was validated, and whether it is safe to use.
+
+**Case-study map:** [Overview](../README.md) | [Architecture](architecture.md) | [Forecasting methodology](forecasting-methodology.md)
 
 ## Controlled release lifecycle
 
@@ -44,3 +46,5 @@ The approved release is the only source for official Dashboard content and contr
 ## Scope and privacy
 
 This case study describes governance patterns without exposing client data, implementation code, operational paths, credentials, internal endpoints, output values, or screenshots. Any future demonstration should use clearly labeled synthetic data and remain separate from the private implementation.
+
+**Return to:** [case-study overview](../README.md)

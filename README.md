@@ -1,16 +1,28 @@
-# Automotive Accessory Forecasting & Decision Platform
+# Hyundai Mobis PIO Accessory Forecasting & Decision Platform
 
-End-to-end forecasting and decision-support system for monthly automotive accessory sales planning.
+A sanitized UCLA MEng capstone case study developed with Hyundai Mobis / Mobis Parts America.
 
-**Forecasting -> Hierarchical Reconciliation -> QA -> Governed Release -> Dashboard -> Excel Delivery**
+**Forecasting -> Hierarchical Reconciliation -> QA -> Governed Release -> Decision Support -> Excel Delivery**
 
-> A UCLA Master of Engineering capstone project developed with Hyundai Mobis / Mobis Parts America.
-
-The production implementation, company data, business-sensitive outputs, and deployment credentials remain private. This repository is a sanitized technical case study containing no proprietary company data or production source code.
+> This documentation-first repository contains no raw company data, production source code, internal workbooks, business-sensitive outputs, or credentials. It is not a claim of production deployment or measured commercial impact.
 
 PIO stands for **Port-Installed Options**: accessories installed before vehicles are delivered to dealers or customers.
 
 PLC is the accessory-category planning hierarchy used in this project.
+
+## At a glance
+
+- **Planning problem:** Turn monthly PIO accessory demand signals into a credible planning outlook across Revenue, vehicle-model, and accessory-category views.
+- **Decision challenge:** Keep the official top-line view consistent with lower-level planning detail, distinguish partial-month evidence from closed Actuals, and prevent unreviewed runs from reaching decision users.
+- **My primary focus:** Led the forecasting-system, governance, time-aware validation, reconciliation, approved-run handoff, QA, and decision-support delivery workstreams within a UCLA MEng team capstone.
+- **Technical and business lens:** Combined forecasting evaluation with explicit business semantics, hierarchical controls, release lineage, and delivery contracts instead of treating the project as a standalone model exercise.
+- **Evidence boundary:** This public case study intentionally omits private data, model scores, operational outputs, and company-specific implementation details; it reports no unverified performance or business-impact metrics.
+
+### Read this in order
+
+1. [Architecture and system boundaries](docs/architecture.md)
+2. [Forecasting methodology and planning semantics](docs/forecasting-methodology.md)
+3. [Governance, QA, and approved-release lifecycle](docs/governance-and-release.md)
 
 ## Business Problem
 
@@ -18,23 +30,23 @@ Monthly accessory planning needs more than a single top-line estimate. Planning 
 
 This project addresses that problem as a decision system, not just a forecasting notebook: it combines time-aware model evaluation, hierarchical planning, business-rule governance, controlled release, application delivery, and business-facing Excel output.
 
-## My Role
+## My Contribution and Team Boundary
 
-This was a UCLA MEng team capstone. My primary contributions focused on the system that turns forecasting work into governed planning outputs.
+This was a UCLA MEng team capstone. I led the work that turns forecasting analysis into governed planning outputs; the project was delivered collaboratively across modeling research, validation, product delivery, and sponsor communication.
 
-### Primary ownership
+### My primary responsibilities
 
-- Led the forecasting-system and release-governance design and implementation.
-- Built the brand-level Revenue evaluation and governed method-selection framework.
-- Designed Model and PLC planning paths that reconcile to approved brand-level Revenue control totals.
-- Defined business semantics for Wholesale context, regular per-vehicle Revenue, separately governed Fleet treatment, and partial-month Nowcasts.
-- Designed and implemented the handoff from approved forecasts to the governed API, decision Dashboard, controlled update workflow, and Excel delivery.
-- Led technical handoff and local deployment workflow design.
+- Forecasting system and release governance: led the design and implementation of the governed planning workflow.
+- Time-aware validation and selection: built the brand-level Revenue evaluation and method-selection framework.
+- Reconciliation: designed Model and PLC planning paths that reconcile to approved brand-level Revenue control totals.
+- Business semantics: defined Wholesale context, regular per-vehicle Revenue, separately governed Fleet treatment, and partial-month Nowcasts.
+- Approved-run handoff and QA: led the contract from approved forecasts to the governed API, decision Dashboard, controlled update workflow, and Excel delivery, including validation and release checks.
+- Decision-support delivery: led technical handoff and local delivery-workflow design for stakeholder-facing planning outputs.
 
 ### Team collaboration
 
-- Delivered the capstone with a UCLA MEng team across modeling research, validation, product delivery, and sponsor communication.
-- Incorporated stakeholder feedback into planning semantics and decision presentation while preserving the governed forecast contract.
+- Teammates contributed to the broader capstone across modeling research, validation, product delivery, and sponsor communication.
+- I incorporated stakeholder feedback into planning semantics and decision presentation while preserving the governed forecast contract.
 
 ## System Architecture
 
