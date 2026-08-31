@@ -1,218 +1,117 @@
 # Hyundai Mobis PIO Accessory Forecasting & Decision Platform
 
-A sanitized UCLA MEng capstone case study developed with Hyundai Mobis / Mobis Parts America.
+Turn monthly PIO accessory demand signals into a governed planning view that stays coherent from Brand Revenue to Model and PLC detail.
 
-**Forecasting -> Hierarchical Reconciliation -> QA -> Governed Release -> Decision Support -> Excel Delivery**
+> A sanitized UCLA MEng capstone case study developed with Hyundai Mobis / Mobis Parts America. This public repository contains no company data, production source code, Sponsor workbooks, operational outputs, credentials, or claim of production deployment or measured commercial impact.
 
-> This documentation-first repository contains no raw company data, production source code, internal workbooks, business-sensitive outputs, or credentials. It is not a claim of production deployment or measured commercial impact.
+![Synthetic dashboard mockup](assets/synthetic-dashboard.svg)
 
-PIO stands for **Port-Installed Options**: accessories installed before vehicles are delivered to dealers or customers.
+*Illustrative interface using synthetic data; no Hyundai Mobis data or proprietary outputs are shown.*
 
-PLC is the accessory-category planning hierarchy used in this project.
+PIO means **Port-Installed Options**: accessories installed before vehicles are delivered to dealers or customers. PLC is the accessory-category planning hierarchy used in this project.
 
-## At a glance
+## 30-Second Overview
 
-- **Planning problem:** Turn monthly PIO accessory demand signals into a credible planning outlook across Revenue, vehicle-model, and accessory-category views.
-- **Decision challenge:** Keep the official top-line view consistent with lower-level planning detail, distinguish partial-month evidence from closed Actuals, and prevent unreviewed runs from reaching decision users.
-- **My primary focus:** Led the forecasting-system, governance, time-aware validation, reconciliation, approved-run handoff, QA, and decision-support delivery workstreams within a UCLA MEng team capstone.
-- **Technical and business lens:** Combined forecasting evaluation with explicit business semantics, hierarchical controls, release lineage, and delivery contracts instead of treating the project as a standalone model exercise.
-- **Evidence boundary:** This public case study intentionally omits private data, model scores, operational outputs, and company-specific implementation details; it reports no unverified performance or business-impact metrics.
+- **Business problem:** Monthly planning needs a credible Revenue outlook, vehicle-volume context, and operational accessory detail without allowing those views to contradict one another.
+- **Historical validation:** Historical one-month-ahead validation: **approximately 7.3% WAPE**. This is a historical rolling-origin backtest result—not a guarantee of future accuracy or a claim of measured commercial impact.
+- **My role:** Within a UCLA MEng team capstone, I led the forecasting pipeline, time-aware validation, reconciliation, governance, QA, approved-run handoff, and Sponsor Excel delivery workstreams.
+- **Technical approach:** Leakage-safe rolling-origin evaluation, governed per-Brand method selection, bottom-up Quantity signals, reconciliation, explicit release controls, and a server-side application integration pattern.
+- **Decision outputs:** One Approved Run provides consistent Brand + Model, Brand + PLC, and Brand + Model + PLC planning detail to the API, Dashboard, and controlled Excel delivery.
+- **Technical stack:** Python, pandas, scikit-learn, statsmodels, XGBoost, openpyxl, FastAPI, Next.js, React, TypeScript, Ant Design, ECharts, pytest, and GitHub Actions were used in the private implementation.
 
-### Read this in order
+## Why this is a decision system—not just a model
+
+The central design problem was to protect the approved Brand-level Revenue outlook while still providing useful operational detail. Vehicle Model and PLC are complementary planning dimensions rather than a strict parent-child hierarchy. Lower-level planning signals are reconciled to governed Brand-level Revenue control totals, so operational detail cannot create a competing top-line forecast.
+
+```mermaid
+flowchart TD
+    A["Approved Brand Revenue control total"] --> B["Brand + Model planning"]
+    A --> C["Brand + PLC planning"]
+    A --> D["Brand + Model + PLC planning detail"]
+```
+
+### Reconciliation logic
+
+```mermaid
+flowchart LR
+    A["Approved Brand Revenue"] --> B["Lower-level Quantity / Model / PLC signals"]
+    B --> C["Relative planning weights and expected unit economics"]
+    C --> D[Reconciliation]
+    D --> E["Brand + Model detail"]
+    D --> F["Brand + PLC detail"]
+    D --> G["Brand + Model + PLC detail"]
+```
+
+Bottom-up detail provides distribution signals; it does not redefine the governed top-line Revenue forecast. PLC Revenue is therefore a reconciled planning allocation, not a separately selected Revenue model at every lower-level node.
+
+## Forecasting and validation
+
+Different Brands can exhibit different demand patterns. The governed Revenue portfolio used a pooled Ridge model, a pooled Random Forest, and a working-day-adjusted seasonal method across the Brand-level forecasts. Supporting Quantity signals used XGBoost, while historical-share methods supported lower-level planning allocation and ETS remained a benchmark where appropriate.
+
+Candidate approaches were evaluated with leakage-safe rolling-origin backtesting: each historical test period used only the information available at that forecast origin. Selection considered accuracy, stability, operational practicality, interpretability, and reproducibility. Routine source refreshes can create a new run, but they do not silently reselect the official method.
+
+For the selected Brand Revenue portfolio, the **approximately 7.3% WAPE** figure is specifically the historical **one-month-ahead (H1)** rolling-origin result. H2/H3 were governance guardrails for coverage and stability; this is not a combined multi-horizon score.
+
+## Business rules that keep planning outputs trustworthy
+
+### Actual, Nowcast, and Forecast
+
+A partial month is useful evidence, but it is not a closed Actual. The system labels completed periods as **Actual**, the in-progress period as **Nowcast**, and future planning periods as **Forecast**.
+
+### Regular business and Fleet component
+
+Regular per-vehicle Revenue (PNVW) remains a regular, non-Fleet metric. The separately governed Fleet component is kept distinct, added once to the all-in outlook, and not manufactured into vehicle-model attribution. This prevents double counting, regular-PNVW contamination, and misleading Model detail.
+
+### Approved Run lineage
+
+```mermaid
+flowchart LR
+    A[Validate] --> B[Forecast and reconcile]
+    B --> C[QA]
+    C --> D[Draft]
+    D --> E[Explicit approval]
+    E --> F[Immutable Approved Run]
+    F --> G[Governed API]
+    F --> H[Decision Dashboard]
+    F --> I[Controlled Excel delivery]
+```
+
+A failed upload, run, reconciliation, or QA check cannot replace the current Approved Run. The API, Dashboard, and Excel delivery share the same approved source.
+
+## My Contribution and Team Boundary
+
+This was a UCLA MEng team capstone. I led the work that turned forecasting analysis into governed planning outputs; the project was delivered collaboratively across modeling research, validation, product delivery, and sponsor communication.
+
+- Led the forecasting-system and release-governance design and implementation.
+- Built the Brand-level Revenue evaluation and governed method-selection framework.
+- Designed Model and PLC planning paths reconciled to approved Brand-level Revenue control totals.
+- Defined Wholesale, regular PNVW, separately governed Fleet, and partial-month Nowcast semantics.
+- Led QA, approved-run handoff, decision-support delivery, and Sponsor Excel delivery workflow design.
+
+Teammates contributed across the broader capstone. This repository does not claim that I independently completed all modeling, product, or sponsor-facing work.
+
+## Clean-Room Conceptual Examples
+
+The short programs in [`examples/`](examples) use fabricated data only. They are clean-room teaching examples of reconciliation, time-aware backtesting, and explicit approval—not private implementation code, an API, or a dashboard.
+
+- [`synthetic_reconciliation.py`](examples/synthetic_reconciliation.py): distribute a synthetic control total with exact reconciliation.
+- [`rolling_origin_backtest.py`](examples/rolling_origin_backtest.py): construct evaluation splits that never train on future observations.
+- [`governed_release_demo.py`](examples/governed_release_demo.py): show that failed drafts cannot replace an Approved Run.
+
+## Technical Deep Dives
 
 1. [Architecture and system boundaries](docs/architecture.md)
 2. [Forecasting methodology and planning semantics](docs/forecasting-methodology.md)
 3. [Governance, QA, and approved-release lifecycle](docs/governance-and-release.md)
 
-## Business Problem
-
-Monthly accessory planning needs more than a single top-line estimate. Planning teams need a credible Revenue outlook, accessory-unit signals, vehicle-volume context, and a way to understand how the view changes as a month progresses. Those outputs must agree across brand, vehicle model, and accessory-category views, and they must be released without confusing partial-month information with final results.
-
-This project addresses that problem as a decision system, not just a forecasting notebook: it combines time-aware model evaluation, hierarchical planning, business-rule governance, controlled release, application delivery, and business-facing Excel output.
-
-## My Contribution and Team Boundary
-
-This was a UCLA MEng team capstone. I led the work that turns forecasting analysis into governed planning outputs; the project was delivered collaboratively across modeling research, validation, product delivery, and sponsor communication.
-
-### My primary responsibilities
-
-- Forecasting system and release governance: led the design and implementation of the governed planning workflow.
-- Time-aware validation and selection: built the brand-level Revenue evaluation and method-selection framework.
-- Reconciliation: designed Model and PLC planning paths that reconcile to approved brand-level Revenue control totals.
-- Business semantics: defined Wholesale context, regular per-vehicle Revenue, separately governed Fleet treatment, and partial-month Nowcasts.
-- Approved-run handoff and QA: led the contract from approved forecasts to the governed API, decision Dashboard, controlled update workflow, and Excel delivery, including validation and release checks.
-- Decision-support delivery: led technical handoff and local delivery-workflow design for stakeholder-facing planning outputs.
-
-### Team collaboration
-
-- Teammates contributed to the broader capstone across modeling research, validation, product delivery, and sponsor communication.
-- I incorporated stakeholder feedback into planning semantics and decision presentation while preserving the governed forecast contract.
-
-## System Architecture
-
-```mermaid
-flowchart TD
-    A[Monthly Source Workbooks] --> B[Source Validation]
-    B --> C[Forecasting and Planning Pipeline]
-
-    C --> D[Governed Brand Revenue Forecast]
-    C --> E[Model and PLC Planning Signals]
-
-    D --> F[Reconciliation and Planning Outputs]
-    E --> F
-
-    F --> G[QA and Release Checks]
-    G --> H[Draft Run]
-    H --> I[Review and Approval]
-    I --> J[Immutable Approved Run]
-
-    J --> K[Governed Forecast API]
-    K --> L[Decision Dashboard]
-    J --> M[Business Excel Delivery]
-```
-
-The architecture keeps one approved release as the source for both the Dashboard and Excel delivery. It separates forecasting and approval responsibilities from browser presentation.
-
-## Forecasting Approach
-
-### Revenue forecasting
-
-Different brands can exhibit different demand patterns, so the system evaluates methods by brand rather than assuming a single algorithm fits every business segment. Candidate approaches are assessed with leakage-safe, time-aware backtesting. A method is selected and frozen per brand based on accuracy, stability, operational practicality, and interpretability.
-
-Routine source refreshes do not silently reselect the official method. This makes a released forecast reproducible and makes a change in method an explicit governance decision rather than an incidental side effect of a data refresh.
-
-### Quantity planning
-
-Accessory-unit planning uses vehicle-model signals and historical accessory-category patterns to support operational detail. These lower-level signals are planning inputs, not an independent replacement for the approved brand-level Revenue forecast.
-
-### PNVW and Wholesale context
-
-Regular PNVW is regular accessory Revenue per selected regular Wholesale vehicle. The separately governed Fleet component is excluded. This creates a per-vehicle planning context without mixing a distinct program component into the regular metric.
-
-### Current-month nowcast
-
-The system distinguishes completed **Actual**, current partial-month **Nowcast**, and future **Forecast** periods. Incomplete month-to-date information is useful for updating the near-term outlook, but it is not presented as final Actual.
-
-## Hierarchical Forecasting & Reconciliation
-
-The planning hierarchy is:
-
-```text
-Total
-  |
-Brand
-  |
-Vehicle Model
-  |
-PLC / Accessory Category
-```
-
-Independent figures at several levels can conflict. The official brand-level Revenue forecast is the governed control total. Lower-level Quantity planning signals, historical PLC patterns, and reconciled allocation margins support operational Model and PLC planning.
-
-PLC Revenue is a reconciled allocation of the approved brand forecast, not a separately selected Revenue model at every lower-level node. This protects the top-line decision while still giving planning teams actionable detail.
-
-## Business-Rule Governance
-
-Real planning systems require business rules in addition to statistical models. A separately governed Fleet component illustrates the principle:
-
-```text
-Regular business
-+
-Separately governed Fleet component
-=
-All-in business outlook
-```
-
-The separation prevents double counting, contamination of regular per-vehicle metrics, and false vehicle-model attribution. The component is included once in all-in views while remaining distinguishable wherever its business meaning matters.
-
-## Governed Release Pipeline
-
-```text
-Upload
--> Validate
--> Run Forecast
--> Reconcile
--> QA
--> Draft
--> Review
--> Approve
--> Immutable Approved Run
-```
-
-A failed upload, forecast run, reconciliation, or QA check never replaces the currently approved forecast. Approval is the only action that changes downstream Dashboard and Excel outputs.
-
-This is production-style governance designed for a capstone decision system. It is not a claim of enterprise production deployment or business adoption.
-
-## API & Application Architecture
-
-```text
-Forecasting System of Record
-        |
-Governed Forecast API
-        |
-Website Backend / Proxy
-        |
-Next.js Dashboard
-```
-
-The browser does not fit models or independently rebuild Official Forecast values. The system backend remains the source of truth; the governed API exposes Approved Run outputs to the application backend, and the browser does not receive credentials. Dashboard and Excel delivery trace back to the same approved release.
-
-## Dashboard / Decision Support
-
-The Dashboard is organized around planning decisions rather than charts alone.
-
-- **Executive Overview:** current outlook and next planning period.
-- **Brand Performance:** Revenue movement, Wholesale scale, and per-vehicle context.
-- **Revenue and Quantity:** official planning totals and components.
-- **Wholesale Inputs:** visibility into planning drivers and availability.
-- **Model & PLC Planning:** operational vehicle-model and accessory-category detail reconciled to official totals.
-- **Top Movers:** governed comparisons that surface material Brand + PLC changes across supported Actual and Forecast contexts.
-- **Governance & QA:** release state and quality evidence.
-- **Output Center:** controlled business delivery.
-- **Update Forecast:** protected workflow for creating a future approved release.
-
-## Reliability & QA
-
-Forecast accuracy alone is not enough; the system also verifies structural and business consistency before publication. Release checks cover source and schema validation, Revenue and Quantity reconciliation, hierarchy consistency, Approved Run consistency, missing or unknown category checks, Fleet double-counting prevention, workbook validation, and automated tests.
-
-## Technical Stack
-
-Verified technologies used in the private implementation:
-
-- **Forecasting and data:** Python, pandas, scikit-learn, statsmodels, XGBoost, openpyxl.
-- **Backend:** FastAPI, Pydantic, HTTPX, Uvicorn.
-- **Frontend:** Next.js, React, TypeScript, Ant Design, ECharts.
-- **Engineering:** pytest, Node.js test runner, GitHub Actions, Git.
-
-## Key Engineering Decisions
-
-1. Keep one official forecast source instead of allowing each interface to calculate its own total.
-2. Govern model selection explicitly rather than silently rerunning it on every refresh.
-3. Treat a partial month as a Nowcast, not final Actual.
-4. Reconcile lower-level planning outputs to official brand-level Revenue.
-5. Preserve the Fleet component as a separate business rule.
-6. Require explicit approval before a release becomes the downstream source.
-7. Give Dashboard and Excel outputs the same release lineage.
-
-## What I Learned
+## Design Lessons and Tradeoffs
 
 - Business definitions can matter as much as model selection.
-- Forecast validation must respect time; random train/test splits do not answer the planning question.
-- Hierarchy consistency matters when forecasts drive operational decisions.
-- A dependable forecasting product needs governance, QA, lineage, and delivery—not only predictions.
-- Stakeholder feedback can improve presentation semantics without changing the underlying forecast.
-- Simpler, explainable methods can be preferable when added model complexity provides little decision value.
+- Time-aware validation answers a different question than random train/test splitting.
+- Reconciliation makes operational detail useful without weakening the top-line decision.
+- Governance, QA, lineage, and delivery are required for dependable forecasting decision support.
+- A simpler, explainable method can be the better decision when extra complexity adds little operational value.
 
-## Confidentiality
+## Confidentiality and Repository Scope
 
-This repository is a sanitized technical case study of a UCLA MEng capstone project developed with Hyundai Mobis / Mobis Parts America. Production implementation code, company datasets, internal workbooks, business-sensitive outputs, and deployment credentials remain private. Examples shown here are architectural, generalized, or synthetic.
-
-## Supporting Documentation
-
-- [Architecture](docs/architecture.md)
-- [Forecasting methodology](docs/forecasting-methodology.md)
-- [Governance and release](docs/governance-and-release.md)
-
-## Repository Scope
-
-This is a documentation-first case study. It intentionally contains no executable forecasting, Dashboard, or API code; no company data; no operational outputs; and no proprietary screenshots.
+This documentation-first repository is a sanitized public case study. It excludes raw or row-level company data, actual Revenue values, monthly forecast tables, Sponsor workbook content, private code, internal paths or URLs, deployable artifacts, credentials, proprietary screenshots, and unverified business-impact claims. The SVG and Python examples are original and synthetic; they are not sources of Official Forecast values.

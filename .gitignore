@@ -1,4 +1,4 @@
-# Keep this repository documentation-only and safe for public review.
+# Keep this repository documentation-first and safe for public review.
 .private/
 .env
 .env.*
