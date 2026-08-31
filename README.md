@@ -25,21 +25,21 @@ The central design problem was to protect the approved Brand-level Revenue outlo
 
 ```mermaid
 flowchart TD
-    A[Approved Brand Revenue control total] --> B[Brand + Model planning]
-    A --> C[Brand + PLC planning]
-    A --> D[Brand + Model + PLC planning detail]
+    A["Approved Brand Revenue control total"] --> B["Brand + Model planning"]
+    A --> C["Brand + PLC planning"]
+    A --> D["Brand + Model + PLC planning detail"]
 ```
 
 ### Reconciliation logic
 
 ```mermaid
 flowchart LR
-    A[Approved Brand Revenue] --> B[Lower-level Quantity / Model / PLC signals]
-    B --> C[Relative planning weights and expected unit economics]
+    A["Approved Brand Revenue"] --> B["Lower-level Quantity / Model / PLC signals"]
+    B --> C["Relative planning weights and expected unit economics"]
     C --> D[Reconciliation]
-    D --> E[Brand + Model detail]
-    D --> F[Brand + PLC detail]
-    D --> G[Brand + Model + PLC detail]
+    D --> E["Brand + Model detail"]
+    D --> F["Brand + PLC detail"]
+    D --> G["Brand + Model + PLC detail"]
 ```
 
 Bottom-up detail provides distribution signals; it does not redefine the governed top-line Revenue forecast. PLC Revenue is therefore a reconciled planning allocation, not a separately selected Revenue model at every lower-level node.

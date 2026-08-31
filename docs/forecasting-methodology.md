@@ -38,19 +38,19 @@ Vehicle Model and PLC are complementary planning dimensions rather than a strict
 
 ```mermaid
 flowchart TD
-    A[Approved Brand Revenue control total] --> B[Brand + Model planning]
-    A --> C[Brand + PLC planning]
-    A --> D[Brand + Model + PLC planning detail]
+    A["Approved Brand Revenue control total"] --> B["Brand + Model planning"]
+    A --> C["Brand + PLC planning"]
+    A --> D["Brand + Model + PLC planning detail"]
 ```
 
 The approved Brand-level Revenue forecast is the control total. Lower-level Quantity signals, Model context, PLC patterns, relative planning weights, and expected unit economics are reconciled into operational detail. Bottom-up detail provides distribution signals; it does not redefine the governed top-line Revenue forecast.
 
 ```mermaid
 flowchart LR
-    A[Approved Brand Revenue] --> B[Lower-level Quantity / Model / PLC signals]
-    B --> C[Relative planning weights and expected unit economics]
+    A["Approved Brand Revenue"] --> B["Lower-level Quantity / Model / PLC signals"]
+    B --> C["Relative planning weights and expected unit economics"]
     C --> D[Reconciliation]
-    D --> E[Brand + Model / Brand + PLC / Brand + Model + PLC detail]
+    D --> E["Brand + Model / Brand + PLC / Brand + Model + PLC detail"]
 ```
 
 PLC Revenue is a reconciled planning allocation of the approved Brand forecast, not a separately selected Revenue model at every lower-level node.
